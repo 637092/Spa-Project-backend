@@ -63,7 +63,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'spa_backend.urls'
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS=spa-project-backend-1.onrender.com,localhost,127.0.0.1
 
 TEMPLATES = [
     {
