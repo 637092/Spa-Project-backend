@@ -101,31 +101,35 @@ class AppointmentCreateView(CreateAPIView):
         response = Response(serializer.data, status=status.HTTP_201_CREATED)
 
         # ---------------- PHONE FORMAT ----------------
-        try:
-            phone = appointment.phone.strip().replace("+", "")
-            if not phone.startswith("91"):
-                phone = "91" + phone
+import threading
 
-            # ---------------- WHATSAPP ----------------
-            send_whatsapp_message(
-                phone=phone,
+def send_notifications(appointment):
+    try:
+        phone = appointment.phone.strip().replace("+", "")
+        if not phone.startswith("91"):
+            phone = "91" + phone
+
+        send_whatsapp_message(
+            phone=phone,
+            name=appointment.customer_name,
+            service=appointment.service.name,
+            date=appointment.date,
+            time=appointment.time
+        )
+
+        if appointment.email:
+            send_booking_email(
+                to_email=appointment.email,
                 name=appointment.customer_name,
                 service=appointment.service.name,
                 date=appointment.date,
                 time=appointment.time
             )
+    except Exception as e:
+        print("⚠️ Notification failed:", e)
 
-            # ---------------- EMAIL ----------------
-            if appointment.email:
-                send_booking_email(
-                    to_email=appointment.email,
-                    name=appointment.customer_name,
-                    service=appointment.service.name,
-                    date=appointment.date,
-                    time=appointment.time
-                )
-        except Exception as e:
-            print("⚠️ Notification error:", e)
+# 🔥 RUN IN BACKGROUND (IMPORTANT)
+threading.Thread(target=send_notifications, args=(appointment,)).start()
 
         return response
 
