@@ -1,5 +1,9 @@
 from rest_framework import serializers
 from .models import Category, Service, Appointment, Gallery, AboutSection, ContactMessage, Location
+from .models import ServiceOption
+from .models import Testimonial
+from .models import Logo
+from .models import Feedback
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -14,19 +18,16 @@ class LocationSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-from rest_framework import serializers
-from .models import Service, ServiceOption
-
-
 class ServiceOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceOption
         fields = ["id", "duration", "price"]
 
 
-# ✅ NEW MAIN SERIALIZER (WITH OPTIONS)
+# ✅ MAIN SERVICE SERIALIZER (FIXED IMAGE URL)
 class ServiceSerializer(serializers.ModelSerializer):
     options = ServiceOptionSerializer(many=True, read_only=True)
+    image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Service
@@ -39,6 +40,14 @@ class ServiceSerializer(serializers.ModelSerializer):
             "description",
             "options",
         ]
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        elif obj.image:
+            return obj.image.url
+        return None
 
     # CREATE with nested options
     def create(self, validated_data):
@@ -89,9 +98,19 @@ class AppointmentSerializer(serializers.ModelSerializer):
 
 
 class GallerySerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Gallery
         fields = "__all__"
+
+    def get_image_url(self, obj):
+        request = self.context.get('request')
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        elif obj.image:
+            return obj.image.url
+        return None
 
 
 class AboutSerializer(serializers.ModelSerializer):
@@ -102,12 +121,15 @@ class AboutSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_image_url(self, obj):
-        if obj.image:
+        request = self.context.get('request')
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        elif obj.image:
             return obj.image.url
         return obj.unsplash_url
 
 
-# ⚠️ OLD SERIALIZER (RENAMED TO AVOID CONFLICT)
+# ⚠️ OLD SERIALIZER (kept same, only fixed URL)
 class ServiceSerializerOld(serializers.ModelSerializer):
     image_display = serializers.SerializerMethodField()
 
@@ -116,7 +138,6 @@ class ServiceSerializerOld(serializers.ModelSerializer):
         fields = [
             "id",
             "name",
-            # ❌ removed price & duration (to prevent crash)
             "description",
             "image",
             "image_url",
@@ -124,7 +145,10 @@ class ServiceSerializerOld(serializers.ModelSerializer):
         ]
 
     def get_image_display(self, obj):
-        if obj.image:
+        request = self.context.get('request')
+        if obj.image and request:
+            return request.build_absolute_uri(obj.image.url)
+        elif obj.image:
             return obj.image.url
         return obj.image_url
 
@@ -135,28 +159,26 @@ class ContactSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-from rest_framework import serializers
-from .models import Testimonial
-
-
 class TestimonialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Testimonial
         fields = '__all__'
 
 
-from rest_framework import serializers
-from .models import Logo
-
-
 class LogoSerializer(serializers.ModelSerializer):
+    logo_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Logo
-        fields = ['id', 'logo', 'alt_text', 'updated_at']
+        fields = ['id', 'logo', 'logo_url', 'alt_text', 'updated_at']
 
-
-from rest_framework import serializers
-from .models import Feedback
+    def get_logo_url(self, obj):
+        request = self.context.get('request')
+        if obj.logo and request:
+            return request.build_absolute_uri(obj.logo.url)
+        elif obj.logo:
+            return obj.logo.url
+        return None
 
 
 class FeedbackSerializer(serializers.ModelSerializer):
@@ -165,10 +187,21 @@ class FeedbackSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Feedback
-        fields = ['id', 'name', 'message', 'profile_photo', 'profile_photo_url', 'created_at', 'created_at_formatted']
+        fields = [
+            'id',
+            'name',
+            'message',
+            'profile_photo',
+            'profile_photo_url',
+            'created_at',
+            'created_at_formatted'
+        ]
 
     def get_profile_photo_url(self, obj):
-        if obj.profile_photo:
+        request = self.context.get('request')
+        if obj.profile_photo and request:
+            return request.build_absolute_uri(obj.profile_photo.url)
+        elif obj.profile_photo:
             return obj.profile_photo.url
         return None
 
