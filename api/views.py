@@ -19,8 +19,6 @@ from .serializers import ServiceSerializer
 
 
 
-print("✅ WhatsApp import loaded")
-
 
 class CategoryListView(ListAPIView):
     queryset = Category.objects.all()
