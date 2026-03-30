@@ -8,18 +8,16 @@ import dj_database_url  # ✅ ADDED
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 SECRET_KEY = 'django-insecure-ofu^dh3eyk5*nx9fz(^-d4u)0@gv6)h5w@s9v1&7+c19(5f60)'
 
 DEBUG = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://spa-project-frontend.onrender.com"
+    "https://spa-project-frontend.onrender.com",
+    "https://spa-project-backend-1.onrender.com",  # ✅ ADDED
 ]
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -35,10 +33,12 @@ INSTALLED_APPS = [
 
 CORS_ALLOW_ALL_ORIGINS = True
 
+# ✅ ADDED (important for frontend communication)
+CORS_ALLOW_CREDENTIALS = True
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # ✅ MOVED TO TOP
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -48,11 +48,9 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-
 ROOT_URLCONF = 'spa_backend.urls'
 
 ALLOWED_HOSTS = ['*']
-
 
 TEMPLATES = [
     {
@@ -69,30 +67,23 @@ TEMPLATES = [
     },
 ]
 
-
 WSGI_APPLICATION = 'spa_backend.wsgi.application'
 
-
 # ================= DATABASE FIX =================
-
-# ✅ USE PostgreSQL if DATABASE_URL exists
-# ✅ Otherwise fallback to your SQLite (no data loss locally)
 
 DATABASES = {
     'default': dj_database_url.parse(
         os.environ.get("DATABASE_URL", f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
         conn_max_age=600,
-        ssl_require=True
+        ssl_require=False  # ✅ FIXED (important)
     )
 }
-
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -109,7 +100,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -118,24 +108,19 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-
 
 ADMIN_CSS = {
     'all': ('admin/css/custom_admin.css',),
 }
 
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
 WHATSAPP_ACCESS_TOKEN = "EAAUeSsyBHFABQq8G5WoGRiRNfts1m7JZA5wwOQWJoodrMJEs3V5mx2rRRI5sT2r2p9iNq4PJhBgnjp53kEBSmaAx6ZAPjAG6r46fwo1zmM5czgHsDWQt6pZCO17z4BToeYPiZAXqcEoI2YKA1DWFh5hw80ZAC4xn3ZAnkOIoz3wNR7BxqqYf8hVr7ssRBwJEbdtD3gLvLO78U0T6CNNoDFBBuUexCbDoRZCjs9sZBQ9aSWthUIT5ZCVFApxlLHQGLE7wQuALrfBsCKLG3p3NJKgZAV"
 WHATSAPP_PHONE_NUMBER_ID = "960822447113982"
-
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
@@ -143,11 +128,9 @@ REST_FRAMEWORK = {
     ),
 }
 
-
 INSTALLED_APPS += [
     'rest_framework_simplejwt.token_blacklist',
 ]
-
 
 SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
@@ -156,16 +139,13 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
-
 ADMIN_SITE_HEADER = "Elegant Thai Spa - Admin Dashboard"
 ADMIN_SITE_TITLE = "Elegant Thai Spa Admin"
 ADMIN_INDEX_TITLE = "Welcome to Elegant Thai Spa Administration"
 
-
 ADMIN_CSS = {
     'all': ('admin/css/custom_admin.css',),
 }
-
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -177,7 +157,6 @@ EMAIL_HOST_PASSWORD = 'ncyo qyeo nfdn rxzz'
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ADMIN_EMAIL = 'elegantthais@gmail.com'
-
 
 RAZORPAY_KEY_ID = "rzp_test_S12kgos03uuacA"
 RAZORPAY_KEY_SECRET = "jvRifBb3bYscwP5onsQyZ4BT"
