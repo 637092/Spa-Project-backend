@@ -76,11 +76,14 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
+    service_option = serializers.IntegerField(write_only=True, required=False)
+
     class Meta:
         model = Appointment
         fields = [
             "id",
             "service",
+            "service_option",   # ✅ ADD THIS
             "date",
             "time",
             "customer_name",
@@ -95,6 +98,10 @@ class AppointmentSerializer(serializers.ModelSerializer):
             "id",
             "transaction_id",
         ]
+
+    def create(self, validated_data):
+        validated_data.pop("service_option", None)  # ✅ IGNORE SAFELY
+        return super().create(validated_data)
 
 
 class GallerySerializer(serializers.ModelSerializer):
