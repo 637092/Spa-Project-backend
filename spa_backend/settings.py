@@ -31,32 +31,14 @@ INSTALLED_APPS = [
     'api',
 ]
 
-# ✅ CORS SETTINGS (FIXED)
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOW_CREDENTIALS = False
+# ✅ FIXED CORS (IMPORTANT)
+CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
     "https://spa-project-frontend.onrender.com",
 ]
 
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "authorization",
-    "content-type",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-]
-
-CORS_ALLOW_METHODS = [
-    "DELETE",
-    "GET",
-    "OPTIONS",
-    "PATCH",
-    "POST",
-    "PUT",
-]
+CORS_ALLOW_CREDENTIALS = True
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',  # ✅ MUST BE FIRST
@@ -101,9 +83,11 @@ DATABASES = {
     )
 }
 
+# ================= REST =================
+
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
 
@@ -130,28 +114,31 @@ USE_I18N = True
 
 USE_TZ = True
 
+# ================= STATIC =================
+
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# ================= MEDIA (🔥 IMPORTANT FIX) =================
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# ✅ FIX FOR RENDER (VERY IMPORTANT)
+if not DEBUG:
+    MEDIA_URL = 'https://spa-project-backend-1.onrender.com/media/'
 
 ADMIN_CSS = {
     'all': ('admin/css/custom_admin.css',),
 }
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-# ✅ IMPORTANT FIX (for media URLs)
-MEDIA_URL_FULL = "https://spa-project-backend-1.onrender.com/media/"
+# ================= WHATSAPP =================
 
 WHATSAPP_ACCESS_TOKEN = "EAAUeSsyBHFABQq8G5WoGRiRNfts1m7JZA5wwOQWJoodrMJEs3V5mx2rRRI5sT2r2p9iNq4PJhBgnjp53kEBSmaAx6ZAPjAG6r46fwo1zmM5czgHsDWQt6pZCO17z4BToeYPiZAXqcEoI2YKA1DWFh5hw80ZAC4xn3ZAnkOIoz3wNR7BxqqYf8hVr7ssRBwJEbdtD3gLvLO78U0T6CNNoDFBBuUexCbDoRZCjs9sZBQ9aSWthUIT5ZCVFApxlLHQGLE7wQuALrfBsCKLG3p3NJKgZAV"
 WHATSAPP_PHONE_NUMBER_ID = "960822447113982"
 
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-    ),
-}
+# ================= JWT =================
 
 INSTALLED_APPS += [
     'rest_framework_simplejwt.token_blacklist',
@@ -164,6 +151,8 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 }
 
+# ================= ADMIN =================
+
 ADMIN_SITE_HEADER = "Elegant Thai Spa - Admin Dashboard"
 ADMIN_SITE_TITLE = "Elegant Thai Spa Admin"
 ADMIN_INDEX_TITLE = "Welcome to Elegant Thai Spa Administration"
@@ -171,6 +160,8 @@ ADMIN_INDEX_TITLE = "Welcome to Elegant Thai Spa Administration"
 ADMIN_CSS = {
     'all': ('admin/css/custom_admin.css',),
 }
+
+# ================= EMAIL =================
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
@@ -182,6 +173,8 @@ EMAIL_HOST_PASSWORD = 'ncyo qyeo nfdn rxzz'
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ADMIN_EMAIL = 'elegantthais@gmail.com'
+
+# ================= RAZORPAY =================
 
 RAZORPAY_KEY_ID = "rzp_test_S12kgos03uuacA"
 RAZORPAY_KEY_SECRET = "jvRifBb3bYscwP5onsQyZ4BT"
