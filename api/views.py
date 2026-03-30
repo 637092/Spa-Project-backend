@@ -139,10 +139,16 @@ class GalleryListView(ListAPIView):
     queryset = Gallery.objects.all()
     serializer_class = GallerySerializer
 
+    def get_serializer_context(self):
+        return {"request": self.request}
+
 
 class AboutAPIView(ListAPIView):
     queryset = AboutSection.objects.filter(is_active=True)
     serializer_class = AboutSerializer
+
+    def get_serializer_context(self):
+        return {"request": self.request}
 
 class AppointmentStatusUpdateView(APIView):
     permission_classes = [IsAuthenticated]
@@ -431,7 +437,16 @@ class LocationAPIView(APIView):
                 "map_embed_url": ""
             })
 
-        return Response(LocationSerializer(location).data)
+        class FeedbackListCreateView(ListCreateAPIView):
+    queryset = Feedback.objects.all()
+    serializer_class = FeedbackSerializer
+    permission_classes = [AllowAny]
+
+    def get_serializer_context(self):
+        return {"request": self.request}
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -491,7 +506,7 @@ class LogoRetrieveView(APIView):
     def get(self, request):
         logo = Logo.objects.first()
         if logo:
-            serializer = LogoSerializer(logo)
+            serializer = LogoSerializer(logo, context={"request": request})
             return Response(serializer.data)
         else:
             return Response({
