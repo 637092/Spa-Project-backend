@@ -16,7 +16,7 @@ DEBUG = True
 
 CSRF_TRUSTED_ORIGINS = [
     "https://spa-project-frontend.onrender.com",
-    "https://spa-project-backend-1.onrender.com",  # ✅ ADDED
+    "https://spa-project-backend-1.onrender.com",
 ]
 
 INSTALLED_APPS = [
@@ -31,13 +31,35 @@ INSTALLED_APPS = [
     'api',
 ]
 
+# ✅ CORS SETTINGS (FIXED)
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = False
 
-# ✅ ADDED (important for frontend communication)
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "https://spa-project-frontend.onrender.com",
+]
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "authorization",
+    "content-type",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  # ✅ MOVED TO TOP
+    'corsheaders.middleware.CorsMiddleware',  # ✅ MUST BE FIRST
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -69,13 +91,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'spa_backend.wsgi.application'
 
-# ================= DATABASE FIX =================
+# ================= DATABASE =================
 
 DATABASES = {
     'default': dj_database_url.parse(
         os.environ.get("DATABASE_URL", f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
         conn_max_age=600,
-        ssl_require=False  # ✅ FIXED (important)
+        ssl_require=False
     )
 }
 
@@ -118,6 +140,9 @@ ADMIN_CSS = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# ✅ IMPORTANT FIX (for media URLs)
+MEDIA_URL_FULL = "https://spa-project-backend-1.onrender.com/media/"
 
 WHATSAPP_ACCESS_TOKEN = "EAAUeSsyBHFABQq8G5WoGRiRNfts1m7JZA5wwOQWJoodrMJEs3V5mx2rRRI5sT2r2p9iNq4PJhBgnjp53kEBSmaAx6ZAPjAG6r46fwo1zmM5czgHsDWQt6pZCO17z4BToeYPiZAXqcEoI2YKA1DWFh5hw80ZAC4xn3ZAnkOIoz3wNR7BxqqYf8hVr7ssRBwJEbdtD3gLvLO78U0T6CNNoDFBBuUexCbDoRZCjs9sZBQ9aSWthUIT5ZCVFApxlLHQGLE7wQuALrfBsCKLG3p3NJKgZAV"
 WHATSAPP_PHONE_NUMBER_ID = "960822447113982"
