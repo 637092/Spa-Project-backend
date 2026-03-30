@@ -1,22 +1,47 @@
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView
-from rest_framework.permissions import AllowAny
-from .models import Category, Service, Appointment, Gallery, AboutSection, Testimonial, Logo, AdminContactInfo, Location
-from .serializers import CategorySerializer, ServiceSerializer, AppointmentSerializer, GallerySerializer, AboutSerializer, TestimonialSerializer, LogoSerializer, LocationSerializer
-from rest_framework.generics import CreateAPIView
-from rest_framework.permissions import AllowAny
-from .utils.whatsapp import send_whatsapp_message
-from rest_framework.views import APIView
-from django.contrib.auth import authenticate
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated
-from .utils.email import send_booking_email
-from .utils.email import send_contact_email
-from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.permissions import AllowAny
-from .models import Service
-from .serializers import ServiceSerializer
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView,
+    RetrieveAPIView,
+    ListCreateAPIView
+)
 
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.views import APIView
+
+from django.contrib.auth import authenticate
+
+from rest_framework_simplejwt.tokens import RefreshToken
+
+# ✅ ALL MODELS (INCLUDING Feedback)
+from .models import (
+    Category,
+    Service,
+    Appointment,
+    Gallery,
+    AboutSection,
+    Testimonial,
+    Logo,
+    AdminContactInfo,
+    Location,
+    Feedback   # ✅ FIXED (VERY IMPORTANT)
+)
+
+# ✅ ALL SERIALIZERS
+from .serializers import (
+    CategorySerializer,
+    ServiceSerializer,
+    AppointmentSerializer,
+    GallerySerializer,
+    AboutSerializer,
+    TestimonialSerializer,
+    LogoSerializer,
+    LocationSerializer,
+    FeedbackSerializer   # ✅ ADD THIS ALSO
+)
+
+# ✅ UTILITIES
+from .utils.whatsapp import send_whatsapp_message
+from .utils.email import send_booking_email, send_contact_email
 
 
 
