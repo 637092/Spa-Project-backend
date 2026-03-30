@@ -437,10 +437,16 @@ class LocationAPIView(APIView):
                 "map_embed_url": ""
             })
 
-        class FeedbackListCreateView(ListCreateAPIView):
+class FeedbackListCreateView(ListCreateAPIView):
     queryset = Feedback.objects.all()
     serializer_class = FeedbackSerializer
     permission_classes = [AllowAny]
+
+    def get_serializer_context(self):
+        return {"request": self.request}
+
+    def perform_create(self, serializer):
+        serializer.save()
 
     def get_serializer_context(self):
         return {"request": self.request}
