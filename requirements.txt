@@ -11,3 +11,5 @@ Pillow
 # ✅ ADD THESE (DO NOT REMOVE ANYTHING ABOVE)
 psycopg2-binary
 dj-database-url
+cloudinary
+django-cloudinary-storage
