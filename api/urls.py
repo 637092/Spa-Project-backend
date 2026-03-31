@@ -26,3 +26,4 @@ urlpatterns = [
     path('logo/', LogoRetrieveView.as_view(), name='logo'),
     path('feedback/', FeedbackListCreateView.as_view(), name='feedback'),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
