@@ -118,6 +118,11 @@ STATIC_URL = "/static/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+# ✅ Added so Django knows where to look for static files (important for admin CSS)
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 # ================= MEDIA =================
 
 MEDIA_URL = "/media/"
