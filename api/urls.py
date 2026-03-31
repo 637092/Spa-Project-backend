@@ -1,10 +1,15 @@
 from django.urls import path
-from .views import CategoryListView, ServiceListView, AppointmentCreateView, GalleryListView, AboutAPIView, ServiceDetailView, AppointmentStatusUpdateView, AdminDashboardStatsAPIView, AdminLoginAPIView, ContactCreateView, TestimonialListView, LogoRetrieveView
-from .views import AdminContactInfoAPIView, LocationAPIView, AIChatAPIView, RazorpayKeyAPIView, PaymentVerifyAPIView, FeedbackListCreateView
-
-
-
-
+from .views import (
+    CategoryListView, ServiceListView, AppointmentCreateView,
+    GalleryListView, AboutAPIView, ServiceDetailView,
+    AppointmentStatusUpdateView, AdminDashboardStatsAPIView,
+    AdminLoginAPIView, ContactCreateView, TestimonialListView,
+    LogoRetrieveView, AdminContactInfoAPIView, LocationAPIView,
+    AIChatAPIView, RazorpayKeyAPIView, PaymentVerifyAPIView,
+    FeedbackListCreateView
+)
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("categories/", CategoryListView.as_view()),
@@ -22,8 +27,11 @@ urlpatterns = [
     path("location/", LocationAPIView.as_view()),
     path("razorpay-key/", RazorpayKeyAPIView.as_view()),
     path("payment/verify/", PaymentVerifyAPIView.as_view()),
-    path('testimonials/', TestimonialListView.as_view(), name='testimonials'),
-    path('logo/', LogoRetrieveView.as_view(), name='logo'),
-    path('feedback/', FeedbackListCreateView.as_view(), name='feedback'),
+    path("testimonials/", TestimonialListView.as_view(), name="testimonials"),
+    path("logo/", LogoRetrieveView.as_view(), name="logo"),
+    path("feedback/", FeedbackListCreateView.as_view(), name="feedback"),
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# ✅ Add this safely
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
