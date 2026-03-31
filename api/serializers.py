@@ -1,9 +1,17 @@
 from rest_framework import serializers
-from .models import Category, Service, Appointment, Gallery, AboutSection, ContactMessage, Location
-from .models import ServiceOption
-from .models import Testimonial
-from .models import Logo
-from .models import Feedback
+from .models import (
+    Category,
+    Service,
+    Appointment,
+    Gallery,
+    AboutSection,
+    ContactMessage,
+    Location,
+    ServiceOption,
+    Testimonial,
+    Logo,
+    Feedback
+)
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -42,7 +50,7 @@ class ServiceSerializer(serializers.ModelSerializer):
         ]
 
     def get_image_url(self, obj):
-        request = self.context.get('request')
+        request = self.context.get("request")
         if obj.image and request:
             return request.build_absolute_uri(obj.image.url)
         elif obj.image:
@@ -51,7 +59,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
     # CREATE with nested options
     def create(self, validated_data):
-        options_data = self.initial_data.get('options', [])
+        options_data = self.initial_data.get("options", [])
         service = Service.objects.create(**validated_data)
 
         for option in options_data:
@@ -61,7 +69,7 @@ class ServiceSerializer(serializers.ModelSerializer):
 
     # UPDATE with nested options
     def update(self, instance, validated_data):
-        options_data = self.initial_data.get('options', [])
+        options_data = self.initial_data.get("options", [])
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
@@ -76,14 +84,18 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 
 class AppointmentSerializer(serializers.ModelSerializer):
-    service_option = serializers.IntegerField(write_only=True, required=False)
+    service_option = serializers.PrimaryKeyRelatedField(
+        queryset=ServiceOption.objects.all(),
+        write_only=True,
+        required=False
+    )
 
     class Meta:
         model = Appointment
         fields = [
             "id",
             "service",
-            "service_option",   # ✅ ADD THIS
+            "service_option",   # ✅ properly handled now
             "date",
             "time",
             "customer_name",
@@ -93,15 +105,15 @@ class AppointmentSerializer(serializers.ModelSerializer):
             "payment_method",
             "transaction_id",
         ]
-
-        read_only_fields = [
-            "id",
-            "transaction_id",
-        ]
+        read_only_fields = ["id", "transaction_id"]
 
     def create(self, validated_data):
-        validated_data.pop("service_option", None)  # ✅ IGNORE SAFELY
-        return super().create(validated_data)
+        service_option = validated_data.pop("service_option", None)
+        appointment = Appointment.objects.create(**validated_data)
+        if service_option:
+            appointment.service_option = service_option
+            appointment.save()
+        return appointment
 
 
 class GallerySerializer(serializers.ModelSerializer):
@@ -112,7 +124,7 @@ class GallerySerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_image_url(self, obj):
-        request = self.context.get('request')
+        request = self.context.get("request")
         if obj.image and request:
             return request.build_absolute_uri(obj.image.url)
         elif obj.image:
@@ -128,7 +140,7 @@ class AboutSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_image_url(self, obj):
-        request = self.context.get('request')
+        request = self.context.get("request")
         if obj.image and request:
             return request.build_absolute_uri(obj.image.url)
         elif obj.image:
@@ -152,7 +164,7 @@ class ServiceSerializerOld(serializers.ModelSerializer):
         ]
 
     def get_image_display(self, obj):
-        request = self.context.get('request')
+        request = self.context.get("request")
         if obj.image and request:
             return request.build_absolute_uri(obj.image.url)
         elif obj.image:
@@ -169,7 +181,7 @@ class ContactSerializer(serializers.ModelSerializer):
 class TestimonialSerializer(serializers.ModelSerializer):
     class Meta:
         model = Testimonial
-        fields = '__all__'
+        fields = "__all__"
 
 
 class LogoSerializer(serializers.ModelSerializer):
@@ -177,10 +189,10 @@ class LogoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Logo
-        fields = ['id', 'logo', 'logo_url', 'alt_text', 'updated_at']
+        fields = ["id", "logo", "logo_url", "alt_text", "updated_at"]
 
     def get_logo_url(self, obj):
-        request = self.context.get('request')
+        request = self.context.get("request")
         if obj.logo and request:
             return request.build_absolute_uri(obj.logo.url)
         elif obj.logo:
@@ -195,17 +207,17 @@ class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         fields = [
-            'id',
-            'name',
-            'message',
-            'profile_photo',
-            'profile_photo_url',
-            'created_at',
-            'created_at_formatted'
+            "id",
+            "name",
+            "message",
+            "profile_photo",
+            "profile_photo_url",
+            "created_at",
+            "created_at_formatted",
         ]
 
     def get_profile_photo_url(self, obj):
-        request = self.context.get('request')
+        request = self.context.get("request")
         if obj.profile_photo and request:
             return request.build_absolute_uri(obj.profile_photo.url)
         elif obj.profile_photo:
