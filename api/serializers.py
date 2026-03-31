@@ -124,7 +124,13 @@ class GallerySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Gallery
-        fields = "__all__"
+        fields = [
+            "id",
+            "image",
+            "image_url",
+            "title",   # include other fields you need
+            "description",
+        ]
 
     def get_image_url(self, obj):
         request = self.context.get("request")
@@ -200,12 +206,19 @@ class TestimonialSerializer(serializers.ModelSerializer):
         return None
 
 
+
 class LogoSerializer(serializers.ModelSerializer):
     logo_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Logo
-        fields = ["id", "logo", "logo_url", "alt_text", "updated_at"]
+        fields = [
+            "id",
+            "logo",
+            "logo_url",
+            "alt_text",
+            "updated_at",
+        ]
 
     def get_logo_url(self, obj):
         request = self.context.get("request")
