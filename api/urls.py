@@ -8,8 +8,6 @@ from .views import (
     AIChatAPIView, RazorpayKeyAPIView, PaymentVerifyAPIView,
     FeedbackListCreateView
 )
-from django.conf import settings
-from django.conf.urls.static import static
 
 urlpatterns = [
     path("categories/", CategoryListView.as_view()),
@@ -31,7 +29,3 @@ urlpatterns = [
     path("logo/", LogoRetrieveView.as_view(), name="logo"),
     path("feedback/", FeedbackListCreateView.as_view(), name="feedback"),
 ]
-
-# ✅ Add this safely
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
