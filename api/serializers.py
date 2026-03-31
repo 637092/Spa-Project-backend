@@ -163,13 +163,16 @@ class ServiceSerializerOld(serializers.ModelSerializer):
             "image_display",
         ]
 
-    def get_image_display(self, obj):
-        request = self.context.get("request")
-        if obj.image and request:
-            return request.build_absolute_uri(obj.image.url)
-        elif obj.image:
-            return obj.image.url
-        return obj.image_url
+        def get_image_url(self, obj):
+            request = self.context.get("request")
+            if obj.image and request:
+                return request.build_absolute_uri(obj.image.url)
+            elif obj.image:
+                return obj.image.url
+            elif obj.image_url:   # <-- fallback to URL field
+                return obj.image_url
+            return None
+
 
 
 class ContactSerializer(serializers.ModelSerializer):
