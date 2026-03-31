@@ -128,7 +128,7 @@ class GallerySerializer(serializers.ModelSerializer):
             "id",
             "image",
             "image_url",
-            "title",   # include other fields you need
+            "title",
             "description",
         ]
 
