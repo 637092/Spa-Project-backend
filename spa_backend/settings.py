@@ -35,6 +35,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "api",
     "rest_framework_simplejwt.token_blacklist",
+
+    # 🔥 FOR MEDIA (future cloudinary support)
+    # "cloudinary",
+    # "cloudinary_storage",
 ]
 
 # ================= CORS =================
@@ -48,7 +52,7 @@ CORS_ALLOW_CREDENTIALS = True
 # ================= MIDDLEWARE =================
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",  # must be first
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -117,13 +121,11 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-# Removed STATICFILES_DIRS since you don’t have a static/ folder
 
 # ================= MEDIA =================
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
-# Do not override MEDIA_URL in production — use cloud storage later
 
 # ================= JWT =================
 
@@ -142,18 +144,19 @@ ADMIN_INDEX_TITLE = "Welcome to Elegant Thai Spa Administration"
 
 ADMIN_CSS = {"all": ("admin/css/custom_admin.css",)}
 
-# ================= EMAIL =================
+# ================= EMAIL (✅ FIXED) =================
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
+# ✅ CORRECT WAY (IMPORTANT)
 EMAIL_HOST_USER = os.environ.get("elegantthais@gmail.com")
 EMAIL_HOST_PASSWORD = os.environ.get("ncyo qyeo nfdn rxzz")
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-ADMIN_EMAIL = os.environ.get("elegantthais@gmail.com", EMAIL_HOST_USER)
+ADMIN_EMAIL = EMAIL_HOST_USER
 
 # ================= WHATSAPP =================
 
