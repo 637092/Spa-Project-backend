@@ -55,7 +55,10 @@ class ServiceSerializer(serializers.ModelSerializer):
             return request.build_absolute_uri(obj.image.url)
         elif obj.image:
             return obj.image.url
+        elif obj.image_url:   # ✅ fallback to URL field
+            return obj.image_url
         return None
+
 
     # CREATE with nested options
     def create(self, validated_data):
