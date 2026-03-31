@@ -117,20 +117,13 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
-# ✅ Added so Django knows where to look for static files (important for admin CSS)
-STATICFILES_DIRS = [
-    BASE_DIR / "static",
-]
+# Removed STATICFILES_DIRS since you don’t have a static/ folder
 
 # ================= MEDIA =================
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
-
-# In production, serve media via backend domain
-if not DEBUG:
-    MEDIA_URL = "https://spa-project-backend-1.onrender.com/media/"
+# Do not override MEDIA_URL in production — use cloud storage later
 
 # ================= JWT =================
 
@@ -152,7 +145,7 @@ ADMIN_CSS = {"all": ("admin/css/custom_admin.css",)}
 # ================= EMAIL =================
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "elegantthais@gmail.com"
+EMAIL_HOST = "smtp.gmail.com"
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
